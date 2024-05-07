@@ -8,7 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="microsoft.aspnetcore.mvc.abstractions" Version="2.2.0" />
+    <PackageReference Include="microsoft.entityframeworkcore.design" Version="8.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

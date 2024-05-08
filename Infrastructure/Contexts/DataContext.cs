@@ -15,7 +15,7 @@ namespace Infrastructure.Contexts
         public DbSet<CourseIncludesEntity> CourseIncludes { get; set; }
         public DbSet<ProgramDetailsEntity> ProgramDetails { get; set; }
         public DbSet<SavedCoursesEntity> SavedCourses { get; set; }
-        public DbSet<SubscriberEntity> Subscribers { get; set; }
+  
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,6 @@ namespace Infrastructure.Contexts
             modelBuilder.Entity<CourseIncludesEntity>().ToTable("CourseIncludes");
             modelBuilder.Entity<ProgramDetailsEntity>().ToTable("ProgramDetails");
             modelBuilder.Entity<SavedCoursesEntity>().ToTable("SavedCourses");
-            modelBuilder.Entity<SubscriberEntity>().ToTable("Subscribers");
 
             base.OnModelCreating(modelBuilder);
         }

@@ -1,9 +1,6 @@
-﻿using Infrastructure.Entities;
-using Infrastructure.Models;
+using Infrastructure.Entities;
 using Infrastructure.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Silicon_WebApi.Controllers

@@ -1,4 +1,4 @@
-﻿using Infrastructure.Entities;
+using Infrastructure.Entities;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;

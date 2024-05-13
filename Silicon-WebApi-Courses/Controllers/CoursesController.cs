@@ -31,7 +31,7 @@ namespace Silicon_WebApi.Controllers
 
             try
             {
-                await _courseRepository.AddAsync(course);
+                await _courseRepository.CreateAsync(course);
                 return CreatedAtAction(nameof(GetById), new { id = course.Id }, course);
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace Silicon_WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var course = await _courseRepository.GetByIdAsync(id);
+            var course = await _courseRepository.GetOneAsync(c => c.Id == id);
             if (course != null)
             {
                 return Ok(course);
@@ -61,7 +61,7 @@ namespace Silicon_WebApi.Controllers
         {
             try
             {
-                var result = await _courseRepository.GetAllCoursesAsync();
+                var result = await _courseRepository.GetAllAsync();
                 if (result != null)
                 {
                     return Ok(result);

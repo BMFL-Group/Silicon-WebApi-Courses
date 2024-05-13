@@ -2,8 +2,7 @@ using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
+using System.Diagnostics.Eventing.Reader;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,10 +23,12 @@ builder.Services.AddScoped<SavedCoursesRepository>();
 
 var app = builder.Build();
 
-app.UseSwagger();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-
-//app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

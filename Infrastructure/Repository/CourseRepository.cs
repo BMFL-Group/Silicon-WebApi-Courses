@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 
 namespace Infrastructure.Repository
@@ -9,6 +10,35 @@ namespace Infrastructure.Repository
     {
         public CourseRepository(DataContext context) : base(context)
         {
+        }
+
+        public async Task<CourseEntity> AddAsync(CourseEntity course)
+        {
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync();
+            return course;
+        }
+
+        public async Task<CourseEntity> GetByIdAsync(string id)
+        {
+            try
+            {
+                var result = await _context.Courses.FirstOrDefaultAsync(course => course.Id == id);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return null!;
+        }
+
+        public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync()
+        {
+            return await _context.Courses.ToListAsync();
         }
 
         // Override to include related entities

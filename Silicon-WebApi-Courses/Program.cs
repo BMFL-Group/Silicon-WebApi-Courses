@@ -2,6 +2,8 @@ using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Swagger;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,13 @@ builder.Services.AddScoped<SavedCoursesRepository>();
 var app = builder.Build();
 
 app.UseSwagger();
+app.MapGet("/swagger/v1/swagger.json", async (httpContext) => {
+    var swaggerProvider = httpContext.RequestServices.GetRequiredService<ISwaggerProvider>();
+    var swagger = swaggerProvider.GetSwagger("v1");
+    httpContext.Response.ContentType = "application/json";
+    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(swagger));
+});
+
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 

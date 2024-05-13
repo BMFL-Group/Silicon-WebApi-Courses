@@ -11,6 +11,24 @@ namespace Infrastructure.Repository
         {
         }
 
+        public async Task<CourseEntity> AddAsync(CourseEntity course)
+        {
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync();
+            return course;
+        }
+
+        public async Task<CourseEntity> GetByIdAsync(string id)
+        {
+            return await _context.Courses
+                .FirstOrDefaultAsync(course => course.Id == id);
+        }
+
+        public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync()
+        {
+            return await _context.Courses.ToListAsync();
+        }
+
         // Override to include related entities
         public async Task<CourseEntity> GetCourseWithDetailsAsync(string courseId)
         {

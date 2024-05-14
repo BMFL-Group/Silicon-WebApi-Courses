@@ -24,6 +24,8 @@ builder.Services.AddScoped<CourseService>();
 builder.Services.AddScoped<CourseIncludesService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProgramDetailsService>();
+builder.Services.AddScoped<CourseContentService>();
+
 var app = builder.Build();
 
 app.UseSwagger();

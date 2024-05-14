@@ -46,7 +46,7 @@ namespace Infrastructure.Repository
 
         public virtual async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            return await _context.Set<TEntity>().Where(predicate).FirstOrDefaultAsync();
         }
         #endregion
 

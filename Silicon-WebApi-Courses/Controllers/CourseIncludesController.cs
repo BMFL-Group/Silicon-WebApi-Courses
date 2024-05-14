@@ -24,5 +24,20 @@ namespace Silicon_WebApi.Controllers
 
             return Ok(courseIncludes);
         }
+        
+        [HttpDelete("{courseId}")]
+        public async Task<IActionResult> Delete(string courseId)
+        {
+            bool deleteSuccess = await _courseIncludesRepository.DeleteAsync(courseId);
+            if (deleteSuccess)
+            {
+                return NoContent(); 
+            }
+            else
+            {
+                return NotFound("No matching course includes found or deletion failed.");
+            }
+        }
+        
     }
 }

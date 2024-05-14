@@ -1,11 +1,7 @@
-using Infrastructure.Entities;
 using Infrastructure.Models;
 using Infrastructure.Repository;
 using Infrastructure.Services;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace Silicon_WebApi.Controllers

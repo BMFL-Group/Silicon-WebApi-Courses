@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace Infrastructure.Models
 {
     public class CourseModel

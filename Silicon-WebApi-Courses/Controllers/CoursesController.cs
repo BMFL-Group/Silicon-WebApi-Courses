@@ -97,23 +97,24 @@ namespace Silicon_WebApi.Controllers
                 {
                     return NotFound($"Course with ID {id} not found.");
                 }
-
-               
-                course.Title = updatedCourseDto.Title ?? course.Title;
-                course.Author = updatedCourseDto.Author ?? course.Author;
-                course.ImageUrl = updatedCourseDto.ImageUrl ?? course.ImageUrl; 
-                course.AltText = updatedCourseDto.AltText ?? course.AltText;
-                course.BestSeller = updatedCourseDto.BestSeller ?? course.BestSeller;
-                course.Currency = updatedCourseDto.Currency ?? course.Currency;
-                course.Price = updatedCourseDto.Price ?? course.Price;
-                course.DiscountPrice = updatedCourseDto.DiscountPrice ?? course.DiscountPrice;
-                course.LengthInHours = updatedCourseDto.LengthInHours ?? course.LengthInHours;
-                course.Rating = updatedCourseDto.Rating ?? course.Rating;
-                course.NumberOfReviews = updatedCourseDto.NumberOfReviews ?? course.NumberOfReviews;
-                course.NumberOfLikes = updatedCourseDto.NumberOfLikes ?? course.NumberOfLikes;
-                course.CategoryId = updatedCourseDto.CategoryId ?? course.CategoryId;
-                course.CourseDescription = updatedCourseDto.CourseDescription ?? course.CourseDescription;
-                course.CourseContentId = updatedCourseDto.CourseContentId ?? course.CourseContentId;
+                else
+                {
+                    course.Title = updatedCourseDto.Title ?? course.Title;
+                    course.Author = updatedCourseDto.Author ?? course.Author;
+                    course.ImageUrl = updatedCourseDto.ImageUrl ?? course.ImageUrl; 
+                    course.AltText = updatedCourseDto.AltText ?? course.AltText;
+                    course.BestSeller = updatedCourseDto.BestSeller = updatedCourseDto.BestSeller;
+                    course.Currency = updatedCourseDto.Currency ?? course.Currency;
+                    course.Price = updatedCourseDto.Price <= 1 ? updatedCourseDto.Price : course.Price;
+                    course.DiscountPrice = updatedCourseDto.DiscountPrice >= 1 ? updatedCourseDto.DiscountPrice : course.DiscountPrice;
+                    course.LengthInHours = updatedCourseDto.LengthInHours ?? course.LengthInHours;
+                    course.Rating = updatedCourseDto.Rating <= 0 ? updatedCourseDto.Rating : course.Rating;
+                    course.NumberOfReviews = updatedCourseDto.NumberOfReviews >= 0 ? updatedCourseDto.NumberOfReviews : course.NumberOfReviews ;
+                    course.NumberOfLikes = updatedCourseDto.NumberOfLikes >= 0 ? updatedCourseDto.NumberOfLikes : course.NumberOfLikes;
+                    course.CategoryId = updatedCourseDto.CategoryId <= 1 ? updatedCourseDto.CategoryId : course.CategoryId;
+                    course.CourseDescription = updatedCourseDto.CourseDescription ?? course.CourseDescription;
+                    course.CourseContentId = updatedCourseDto.CourseContentId ?? course.CourseContentId;
+                }           
 
                 
                 bool updateSuccess = await _courseRepository.UpdateAsync(course);

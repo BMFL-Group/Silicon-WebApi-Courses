@@ -7,11 +7,10 @@ namespace Infrastructure.Entities
     public class CourseIncludesEntity
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Add this attribute
-        public string Id { get; set; } // Remove the default assignment with Guid.NewGuid()
+        public int Id { get; set; }
 
         [ForeignKey("Course")]
-        public string CourseId { get; set; }
+        public string CourseId { get; set; } = null!;
         public virtual CourseEntity Course { get; set; } = new();
         public string FACode { get; set; } = null!;
         public string Description { get; set; } = null!;

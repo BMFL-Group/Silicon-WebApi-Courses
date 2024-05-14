@@ -32,6 +32,8 @@ namespace Infrastructure.Services
             {
                 var category = await _categoryService.CreateAsync(model.Category);
 
+                //var courseContent = await _courseContentService.CreateAsync(model.CourseContent);
+
                 var newCourse = new CourseEntity
                 {
                     Title = model.Title,
@@ -42,11 +44,11 @@ namespace Infrastructure.Services
                     Price = model.Price,
                     DiscountPrice = model.DiscountPrice,
                     LengthInHours = model.LengthInHours,
-                    CourseDescription = model.Description,
+                    CourseDescription = model.CourseDescription,
                     CategoryId = category.Id,
                 };
 
-                var courseIncludesEntities = model.Includes.Select(include => new CourseIncludesEntity
+                var courseIncludesEntities = model.CourseIncludes.Select(include => new CourseIncludesEntity
                 {
                     Description = include.Description,
                     FACode = include.FACode,
@@ -54,24 +56,26 @@ namespace Infrastructure.Services
                 }).ToList();
 
                 await _context.Courses.AddAsync(newCourse);
-                await _context.SaveChangesAsync();
-
-                if (newCourse != null)
+                var result = await _context.SaveChangesAsync();
+                if (result == 1)
                 {
                     foreach (var courseIncludesEntity in courseIncludesEntities)
                     {
                         var courseIncludes = await _includesService.CreateAsync(courseIncludesEntity);
                     }
 
+
+
+                    return newCourse;
                 }
 
-                return newCourse;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while creating the course");
                 throw new ApplicationException("Failed to create the course", ex);
             }
+            return null!;
         }
     }
 }

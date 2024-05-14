@@ -3,7 +3,6 @@ using Infrastructure.Contexts;
 using Infrastructure.Entities;
 using Infrastructure.Models;
 using Infrastructure.Repository;
-using System.Data;
 
 namespace Infrastructure.Services
 {

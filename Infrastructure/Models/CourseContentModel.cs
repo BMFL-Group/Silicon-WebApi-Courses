@@ -3,6 +3,6 @@
     public class CourseContentModel
     {
         public int Id { get; set; }
-        public string[] Strings { get; set; } = null!;
+        public string[] Strings { get; set; } = [];
     }
 }

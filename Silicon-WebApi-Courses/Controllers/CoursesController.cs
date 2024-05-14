@@ -1,6 +1,11 @@
 using Infrastructure.Entities;
+using Infrastructure.Models;
 using Infrastructure.Repository;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace Silicon_WebApi.Controllers
@@ -10,29 +15,25 @@ namespace Silicon_WebApi.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly CourseRepository _courseRepository;
+        private readonly CourseService _courseService;
 
-        public CoursesController(CourseRepository courseRepository)
+        public CoursesController(CourseRepository courseRepository, CourseService courseService)
         {
             _courseRepository = courseRepository;
+            _courseService = courseService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CourseEntity course)
+        public async Task<IActionResult> Create(CourseModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            if (course == null)
-            {
-                return BadRequest("Course data is null.");
-            }
-
             try
             {
-                await _courseRepository.CreateAsync(course);
-                return CreatedAtAction(nameof(GetById), new { id = course.Id }, course);
+                var createdCourse = await _courseService.CreateCourse(model);
+                return CreatedAtAction(nameof(GetById), new { id = createdCourse.Id }, createdCourse);
             }
             catch (Exception ex)
             {
@@ -76,5 +77,91 @@ namespace Silicon_WebApi.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] CourseUpdateDto updatedCourseDto)
+        {
+            if (updatedCourseDto == null)
+            {
+                return BadRequest("Update data cannot be null.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var course = await _courseRepository.GetOneAsync(c => c.Id == id);
+                if (course == null)
+                {
+                    return NotFound($"Course with ID {id} not found.");
+                }
+
+               
+                course.Title = updatedCourseDto.Title ?? course.Title;
+                course.Author = updatedCourseDto.Author ?? course.Author;
+                course.ImageUrl = updatedCourseDto.ImageUrl ?? course.ImageUrl; 
+                course.AltText = updatedCourseDto.AltText ?? course.AltText;
+                course.BestSeller = updatedCourseDto.BestSeller ?? course.BestSeller;
+                course.Currency = updatedCourseDto.Currency ?? course.Currency;
+                course.Price = updatedCourseDto.Price ?? course.Price;
+                course.DiscountPrice = updatedCourseDto.DiscountPrice ?? course.DiscountPrice;
+                course.LengthInHours = updatedCourseDto.LengthInHours ?? course.LengthInHours;
+                course.Rating = updatedCourseDto.Rating ?? course.Rating;
+                course.NumberOfReviews = updatedCourseDto.NumberOfReviews ?? course.NumberOfReviews;
+                course.NumberOfLikes = updatedCourseDto.NumberOfLikes ?? course.NumberOfLikes;
+                course.CategoryId = updatedCourseDto.CategoryId ?? course.CategoryId;
+                course.CourseDescription = updatedCourseDto.CourseDescription ?? course.CourseDescription;
+                course.CourseContentId = updatedCourseDto.CourseContentId ?? course.CourseContentId;
+
+                
+                bool updateSuccess = await _courseRepository.UpdateAsync(course);
+                if (updateSuccess)
+                {
+                   
+                    var updatedCourseEntity = await _courseRepository.GetOneAsync(c => c.Id == id);
+                    return Ok(updatedCourseEntity);
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred while updating the course.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var course = await _courseRepository.GetOneAsync(c => c.Id == id);
+                if (course == null)
+                {
+                    return NotFound($"Course with ID {id} not found.");
+                }
+
+                bool deleteSuccess = await _courseRepository.DeleteAsync(course);
+                if (deleteSuccess)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return StatusCode(500, "Something went wrong when deleting the course.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Repository;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -19,7 +20,10 @@ builder.Services.AddScoped<CourseIncludesRepository>();
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<ProgramDetailsRepository>();
 builder.Services.AddScoped<SavedCoursesRepository>();
-
+builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<CourseIncludesService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProgramDetailsService>();
 var app = builder.Build();
 
 app.UseSwagger();

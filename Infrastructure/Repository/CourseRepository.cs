@@ -29,5 +29,11 @@ namespace Infrastructure.Repository
             return course; // return to found course
         }
 
+        // OPTIONAL 
+
+        //public async Task<bool> CourseExists(string courseId)
+        //{
+        //    return await _context.Courses.AnyAsync(c => c.Id == courseId);
+       // }
     }
 }

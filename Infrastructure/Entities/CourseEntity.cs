@@ -43,11 +43,11 @@ namespace Infrastructure.Entities
 
         public int? CategoryId { get; set; }
 
-        public CategoryEntity? Category { get; set; }
+        public virtual CategoryEntity Category { get; set; } = new();
 
         public string CourseDescription { get; set; } = null!;
 
-        public int CourseContentId { get; set; }
+        public int? CourseContentId { get; set; }
 
         public CourseContentEntity CourseContent { get; set; } = new CourseContentEntity();
 

@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
-using Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Repository
 {
@@ -11,17 +9,47 @@ namespace Infrastructure.Repository
     {
         private readonly DataContext _context;
 
-        public CourseIncludesRepository(DataContext context)
+
+        public CourseIncludesRepository(DataContext context, ILogger<CourseIncludesRepository> logger)
         {
             _context = context;
         }
 
         public async Task<List<CourseIncludesEntity>> GetCourseIncludesByIdAsync(string courseId)
         {
-            return await _context.Set<CourseIncludesEntity>()
+            return await _context.CourseIncludes
                                  .Where(ci => ci.CourseId == courseId)
-                                 .Include(ci => ci.Course)
                                  .ToListAsync();
+        }
+
+        public async Task<CourseIncludesEntity> AddCourseIncludesAsync(CourseIncludesEntity courseIncludes)
+        {
+            try
+            {
+                _context.CourseIncludes.Add(courseIncludes);
+                await _context.SaveChangesAsync();
+                return courseIncludes;
+            }
+            catch 
+            {
+                throw; 
+            }
+        }
+
+        public async Task<bool> DeleteAsync(string courseId)
+        {
+            var courseIncludes = await _context.CourseIncludes
+                                               .Where(ci => ci.CourseId == courseId)
+                                               .ToListAsync();
+
+            if (!courseIncludes.Any())
+            {
+                return false;
+            }
+
+            _context.CourseIncludes.RemoveRange(courseIncludes);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

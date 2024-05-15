@@ -1,60 +1,60 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
-using Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repository
 {
     public class CourseIncludesRepository
     {
         private readonly DataContext _context;
+        private readonly ILogger<CourseIncludesRepository> _logger;
 
-        public CourseIncludesRepository(DataContext context)
+        public CourseIncludesRepository(DataContext context, ILogger<CourseIncludesRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<CourseIncludesEntity>> GetCourseIncludesByIdAsync(string courseId)
         {
-            return await _context.Set<CourseIncludesEntity>()
+            return await _context.CourseIncludes
                                  .Where(ci => ci.CourseId == courseId)
-                                 .Include(ci => ci.Course)
                                  .ToListAsync();
         }
 
-        public async Task<CourseIncludesEntity> GetOneAsync(Expression<Func<CourseIncludesEntity, bool>> predicate)
+        public async Task<CourseIncludesEntity> AddCourseIncludesAsync(CourseIncludesEntity courseIncludes)
         {
-            return await _context.CourseIncludes
-                .Include(ci => ci.Course)
-                .FirstOrDefaultAsync(predicate);
-        }
-        
-        public async Task<bool> DeleteAsync(string courseId)
-        {
-            if (string.IsNullOrEmpty(courseId))
-            {
-                return false; 
-            }
-
             try
             {
-                var courseInclude = await _context.CourseIncludes
-                    .FirstOrDefaultAsync(ci => ci.CourseId == courseId);
-
-                if (courseInclude == null)
-                {
-                    return false; 
-                }
-
-                _context.CourseIncludes.Remove(courseInclude);
-                int result = await _context.SaveChangesAsync();
-                return result > 0; 
+                _context.CourseIncludes.Add(courseIncludes);
+                await _context.SaveChangesAsync();
+                return courseIncludes;
             }
-            catch (Exception)
-            { 
-                return false;
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "An error occurred while saving the CourseIncludes entity. CourseId: {CourseId}", courseIncludes.CourseId);
+                throw; // Rethrow to be caught by the controller
             }
         }
 
+        public async Task<bool> DeleteAsync(string courseId)
+        {
+            var courseIncludes = await _context.CourseIncludes
+                                               .Where(ci => ci.CourseId == courseId)
+                                               .ToListAsync();
+
+            if (!courseIncludes.Any())
+            {
+                return false;
+            }
+
+            _context.CourseIncludes.RemoveRange(courseIncludes);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

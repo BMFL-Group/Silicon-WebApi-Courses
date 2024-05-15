@@ -1,9 +1,12 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace Infrastructure.Models
 {
     public class CourseIncludesModel
     {
-        public string Description { get; set; }
-        public string FACode { get; set; }
+        public string CourseId { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string FACode { get; set; } = null!;
     }
 }

@@ -15,7 +15,7 @@ namespace Infrastructure.Contexts
         public DbSet<CourseIncludesEntity> CourseIncludes { get; set; }
         public DbSet<ProgramDetailsEntity> ProgramDetails { get; set; }
         public DbSet<SavedCoursesEntity> SavedCourses { get; set; }
-  
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

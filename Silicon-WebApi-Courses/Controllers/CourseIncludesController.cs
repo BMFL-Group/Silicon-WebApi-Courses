@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Silicon_WebApi_Courses.DTOs;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,9 +39,11 @@ namespace Silicon_WebApi.Controllers
 
             try
             {
+                // Validate that the CourseId exists using CourseRepository
                 var courseExists = await _courseRepository.CourseExistsAsync(courseIncludesDTO.CourseId);
                 if (!courseExists)
                 {
+                    _logger.LogWarning("Invalid CourseId: {CourseId}. The specified course does not exist.", courseIncludesDTO.CourseId);
                     return BadRequest("Invalid CourseId. The specified course does not exist.");
                 }
 

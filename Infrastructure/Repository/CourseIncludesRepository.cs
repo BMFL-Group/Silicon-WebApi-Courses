@@ -2,17 +2,21 @@
 using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repository
 {
     public class CourseIncludesRepository
     {
         private readonly DataContext _context;
-
+        private readonly ILogger<CourseIncludesRepository> _logger;
 
         public CourseIncludesRepository(DataContext context, ILogger<CourseIncludesRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<CourseIncludesEntity>> GetCourseIncludesByIdAsync(string courseId)
@@ -30,9 +34,10 @@ namespace Infrastructure.Repository
                 await _context.SaveChangesAsync();
                 return courseIncludes;
             }
-            catch 
+            catch (DbUpdateException ex)
             {
-                throw; 
+                _logger.LogError(ex, "An error occurred while saving the CourseIncludes entity. CourseId: {CourseId}", courseIncludes.CourseId);
+                throw; // Rethrow to be caught by the controller
             }
         }
 

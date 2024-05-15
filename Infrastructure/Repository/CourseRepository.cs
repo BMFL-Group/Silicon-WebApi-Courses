@@ -1,7 +1,6 @@
 ﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 
 namespace Infrastructure.Repository
@@ -10,6 +9,18 @@ namespace Infrastructure.Repository
     public class CourseRepository(DataContext context) : BaseRepo<CourseEntity, DataContext>(context)
     {
         public override async Task<CourseEntity> GetOneAsync(Expression<Func<CourseEntity, bool>> predicate)
+        {
+            return await _context.Courses
+                .FirstOrDefaultAsync(course => course.Id == id);
+        }
+
+        public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync()
+        {
+            return await _context.Courses.ToListAsync();
+        }
+
+        // Override to include related entities
+        public async Task<CourseEntity> GetCourseWithDetailsAsync(string courseId)
         {
             var course = await _context.Courses
              .Where(predicate)

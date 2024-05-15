@@ -7,9 +7,10 @@ namespace Infrastructure.Entities
     {
         [Key]
         public int Id { get; set; }
+
         [ForeignKey("Course")]
-        public string CourseId { get; set; }
-        public virtual CourseEntity Course { get; set; } = new();
+        public string CourseId { get; set; } = null!;
+        public virtual CourseEntity Course { get; set; } = null!;
         public string FACode { get; set; } = null!;
         public string Description { get; set; } = null!;
     }

@@ -19,6 +19,7 @@ namespace Silicon_WebApi.Controllers
             _courseService = courseService;
         }
 
+        #region CREATE
         [HttpPost]
         public async Task<IActionResult> Create(CourseModel model)
         {
@@ -36,8 +37,9 @@ namespace Silicon_WebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        #endregion
 
-
+        #region GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -51,8 +53,9 @@ namespace Silicon_WebApi.Controllers
                 return NotFound($"Course with ID {id} not found.");
             }
         }
+        #endregion
 
-
+        #region GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -72,7 +75,9 @@ namespace Silicon_WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region UPDATE
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] CourseUpdateDto updatedCourseDto)
         {
@@ -130,10 +135,9 @@ namespace Silicon_WebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        #endregion
 
-
-
-
+        #region DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -160,5 +164,6 @@ namespace Silicon_WebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        #endregion
     }
 }

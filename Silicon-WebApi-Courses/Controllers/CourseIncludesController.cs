@@ -28,6 +28,7 @@ namespace Silicon_WebApi.Controllers
             _logger = logger;
         }
 
+        #region CREATE
         [HttpPost]
         public async Task<ActionResult<CourseIncludesDTO>> CreateCourseIncludes(CourseIncludesDTO courseIncludesDTO)
         {
@@ -73,7 +74,9 @@ namespace Silicon_WebApi.Controllers
                 return StatusCode(500, "Something went wrong when creating the course includes.");
             }
         }
+        #endregion
 
+        #region GET
         [HttpGet("{courseId}")]
         public async Task<ActionResult<List<CourseIncludesDTO>>> GetCourseIncludes(string courseId)
         {
@@ -90,7 +93,9 @@ namespace Silicon_WebApi.Controllers
 
             return Ok(courseIncludesDTOs);
         }
+        #endregion
 
+        #region DELETE
         [HttpDelete("{courseId}")]
         public async Task<IActionResult> Delete(string courseId)
         {
@@ -104,7 +109,9 @@ namespace Silicon_WebApi.Controllers
                 return NotFound("No matching course includes found or deletion failed.");
             }
         }
+        #endregion
 
+        #region UPDATE
         [HttpPut("{courseId}")]
         public async Task<IActionResult> UpdateCourseIncludes(string courseId, [FromBody] CourseIncludesDTO courseIncludesDTO)
         {
@@ -157,5 +164,6 @@ namespace Silicon_WebApi.Controllers
                 return StatusCode(500, "Something went wrong when updating the course includes.");
             }
         }
+        #endregion
     }
 }

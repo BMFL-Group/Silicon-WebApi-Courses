@@ -36,8 +36,8 @@ namespace Infrastructure.Repository
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, "An error occurred while saving the CourseIncludes entity. CourseId: {CourseId}", courseIncludes.CourseId);
-                throw; // Rethrow to be caught by the controller
+              
+                throw; 
             }
         }
 
@@ -55,6 +55,20 @@ namespace Infrastructure.Repository
             _context.CourseIncludes.RemoveRange(courseIncludes);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<CourseIncludesEntity> UpdateCourseIncludesAsync(CourseIncludesEntity courseIncludes)
+        {
+            try
+            {
+                _context.CourseIncludes.Update(courseIncludes);
+                await _context.SaveChangesAsync();
+                return courseIncludes;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Silicon_WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CourseIncludesDTO>> CreateCourseIncludes([FromBody] CourseIncludesDTO courseIncludesDTO)
+        public async Task<ActionResult<CourseIncludesDTO>> CreateCourseIncludes(CourseIncludesDTO courseIncludesDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -43,7 +43,6 @@ namespace Silicon_WebApi.Controllers
                 var courseExists = await _courseRepository.CourseExistsAsync(courseIncludesDTO.CourseId);
                 if (!courseExists)
                 {
-                    _logger.LogWarning("Invalid CourseId: {CourseId}. The specified course does not exist.", courseIncludesDTO.CourseId);
                     return BadRequest("Invalid CourseId. The specified course does not exist.");
                 }
 
@@ -67,12 +66,10 @@ namespace Silicon_WebApi.Controllers
             }
             catch (DbUpdateException dbEx)
             {
-                _logger.LogError(dbEx, "Database update exception occurred while creating course includes.");
                 return StatusCode(500, "A database error occurred while creating the course includes.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while creating course includes.");
                 return StatusCode(500, "Something went wrong when creating the course includes.");
             }
         }
@@ -107,20 +104,58 @@ namespace Silicon_WebApi.Controllers
                 return NotFound("No matching course includes found or deletion failed.");
             }
         }
-        
-        [HttpDelete("{courseId}")]
-        public async Task<IActionResult> Delete(string courseId)
+
+        [HttpPut("{courseId}")]
+        public async Task<IActionResult> UpdateCourseIncludes(string courseId, [FromBody] CourseIncludesDTO courseIncludesDTO)
         {
-            bool deleteSuccess = await _courseIncludesRepository.DeleteAsync(courseId);
-            if (deleteSuccess)
+            if (!ModelState.IsValid)
             {
-                return NoContent(); 
+                return BadRequest(ModelState);
             }
-            else
+
+            try
             {
-                return NotFound("No matching course includes found or deletion failed.");
+                if (courseId != courseIncludesDTO.CourseId)
+                {
+                    return BadRequest("CourseId in path and request body need to match!");
+                }
+
+                var courseExists = await _courseRepository.CourseExistsAsync(courseIncludesDTO.CourseId);
+                if (!courseExists)
+                {
+                    
+                    return BadRequest("Invalid CourseId. The specified course does not exist.");
+                }
+
+                var existingIncludes = await _courseIncludesRepository.GetCourseIncludesByIdAsync(courseId);
+                if (existingIncludes == null || !existingIncludes.Any())
+                {
+                    return NotFound("No includes found for the specified course.");
+                }
+
+               
+                var includeToUpdate = existingIncludes.First(); 
+                includeToUpdate.Description = courseIncludesDTO.Description;
+                includeToUpdate.FACode = courseIncludesDTO.FACode;
+
+                var updatedInclude = await _courseIncludesRepository.UpdateCourseIncludesAsync(includeToUpdate);
+                var updatedCourseIncludesDTO = new CourseIncludesDTO
+                {
+                    CourseId = updatedInclude.CourseId,
+                    Description = updatedInclude.Description,
+                    FACode = updatedInclude.FACode
+                };
+
+                return Ok(updatedCourseIncludesDTO);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                return StatusCode(500, "A database error occurred while updating the course includes.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong when updating the course includes.");
             }
         }
-        
     }
 }

@@ -12,16 +12,23 @@ namespace Infrastructure.Repository
         {
         }
 
+        #region ADD
         public async Task<CourseEntity> AddAsync(CourseEntity course)
         {
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
             return course;
         }
+        #endregion
+
+        #region Exists
         public async Task<bool> CourseExistsAsync(string courseId)
         {
             return await _context.Courses.AnyAsync(c => c.Id == courseId);
         }
+        #endregion
+
+        #region GET BY ID
 
         public async Task<CourseEntity> GetByIdAsync(string id)
         {
@@ -39,13 +46,16 @@ namespace Infrastructure.Repository
             }
             return null!;
         }
+        #endregion
 
+        #region GET ALL
         public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync()
         {
             return await _context.Courses.ToListAsync();
         }
+        #endregion
 
-        // Override to include related entities
+        #region GET COURSE WITH DETAILS
         public async Task<CourseEntity> GetCourseWithDetailsAsync(string courseId)
         {
             var course = await _context.Courses
@@ -64,5 +74,6 @@ namespace Infrastructure.Repository
             }
             return course; // return to found course
         }
+        #endregion
     }
 }

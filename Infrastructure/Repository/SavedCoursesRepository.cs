@@ -13,7 +13,7 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
-
+        #region GET
         public async Task<List<SavedCoursesModel>> GetSavedCoursesForUserAsync(string userId)
         {
             var savedCourses = await _context.SavedCourses
@@ -29,7 +29,9 @@ namespace Infrastructure.Repositories
 
             return savedCourseModels;
         }
+        #endregion
 
+        #region CREATE
         public async Task<SavedCoursesModel> CreateSavedCourseAsync(SavedCoursesModel savedCourse)
         {
             var entity = new SavedCoursesEntity
@@ -44,6 +46,9 @@ namespace Infrastructure.Repositories
             savedCourse.Id = entity.Id; 
             return savedCourse;
         }
+        #endregion
+
+        #region DELETE
 
         public async Task<bool> DeleteSavedCourseAsync(int savedCourseId)
         {
@@ -56,5 +61,6 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        #endregion
     }
 }

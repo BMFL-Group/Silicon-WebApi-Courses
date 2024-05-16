@@ -6,12 +6,11 @@ namespace Infrastructure.Entities
     public class ProgramDetailsEntity
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public int Id { get; set; }
 
         [ForeignKey("Course")]
-        public string CourseId { get; set; } 
-        public virtual CourseEntity Course { get; set; } = new();
-
+        public string CourseId { get; set; } = null!;
+        public virtual CourseEntity Course { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
     }

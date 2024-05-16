@@ -19,7 +19,7 @@ namespace Infrastructure.Repository
         #region CREATE
         public async Task<ProgramDetailsEntity> AddProgramDetailAsync(ProgramDetailsEntity programDetail)
         {
-            _context.ProgramDetails.Add(programDetail);
+            await _context.Set<ProgramDetailsEntity>().AddAsync(programDetail);            
             try
             {
                 await _context.SaveChangesAsync();
@@ -84,7 +84,7 @@ namespace Infrastructure.Repository
         #endregion
 
         #region EXISTS
-        private bool ProgramDetailExists(string id)
+        private bool ProgramDetailExists(int id)
         {
             return _context.ProgramDetails.Any(x => x.Id == id);
         }

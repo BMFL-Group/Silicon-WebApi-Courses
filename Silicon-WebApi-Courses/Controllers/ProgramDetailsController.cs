@@ -78,7 +78,7 @@ namespace Silicon_WebApi_Courses.Controllers
 
         #region UPDATE
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProgramDetail(string id, [FromBody] ProgramDetailsEntity programDetail)
+        public async Task<IActionResult> UpdateProgramDetail(int id, [FromBody] ProgramDetailsEntity programDetail)
         {
             if (id != programDetail.Id)
                 return BadRequest("Mismatched ID in request");

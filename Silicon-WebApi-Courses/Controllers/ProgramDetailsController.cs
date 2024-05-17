@@ -1,6 +1,5 @@
 ﻿using Infrastructure.Entities;
 using Infrastructure.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Silicon_WebApi_Courses.Controllers
@@ -18,9 +17,8 @@ namespace Silicon_WebApi_Courses.Controllers
             _courseRepository = courseRepository;
         }
 
-        #region Create
         [HttpPost]
-        public async Task<IActionResult> CreateProgramDetail( ProgramDetailsDto programDetailsDto)
+        public async Task<IActionResult> CreateProgramDetail([FromBody] ProgramDetailsDto programDetailsDto)
         {
             if (!ModelState.IsValid)
             {
@@ -38,7 +36,6 @@ namespace Silicon_WebApi_Courses.Controllers
                 CourseId = programDetailsDto.CourseId,
                 Title = programDetailsDto.Title,
                 Description = programDetailsDto.Description
-
             };
 
             try
@@ -51,56 +48,75 @@ namespace Silicon_WebApi_Courses.Controllers
                 return StatusCode(500, "An error occurred while creating the program details: " + ex.Message);
             }
         }
-        #endregion
-
-        #region GET ONE
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProgramDetail(string id)
+        public async Task<IActionResult> GetProgramDetail(int id) 
         {
-            var programDetail = await _programDetailsRepository.GetProgramDetailAsync(id);
-            if (programDetail == null)
+            try
             {
-                return NotFound();
+                var programDetail = await _programDetailsRepository.GetProgramDetailAsync(id);
+                if (programDetail == null)
+                {
+                    return NotFound();
+                }
+                return Ok(programDetail);
             }
-            return Ok(programDetail);
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
-        #endregion
 
-        #region GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAllProgramDetails()
         {
             var details = await _programDetailsRepository.GetAllProgramDetailsAsync();
             return Ok(details);
         }
-        #endregion
 
-        #region UPDATE
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProgramDetail(int id, [FromBody] ProgramDetailsEntity programDetail)
+        public async Task<IActionResult> UpdateProgramDetail(int id, [FromBody] ProgramDetailsDto updateDto)
         {
-            if (id != programDetail.Id)
-                return BadRequest("Mismatched ID in request");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            bool updated = await _programDetailsRepository.UpdateProgramDetailAsync(programDetail);
-            if (!updated)
-                return NotFound();
+            var programDetail = await _programDetailsRepository.GetProgramDetailAsync(id);
+            if (programDetail == null)
+            {
+                return NotFound($"No program detail found with ID {id}.");
+            }
 
-            return NoContent();
+            programDetail.Title = updateDto.Title ?? programDetail.Title;
+            programDetail.Description = updateDto.Description ?? programDetail.Description;
+
+            try
+            {
+                bool updated = await _programDetailsRepository.UpdateProgramDetailAsync(programDetail);
+                if (!updated)
+                {
+                    return NotFound("Update failed or no changes made.");
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating the program details: " + ex.Message);
+            }
         }
-        #endregion
 
-        #region DELETE
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProgramDetail(string id)
+        public async Task<IActionResult> DeleteProgramDetail(int id)
         {
             bool deleted = await _programDetailsRepository.DeleteProgramDetailAsync(id);
             if (!deleted)
+            {
                 return NotFound();
 
+            }
             return NoContent();
         }
-        #endregion
     }
 }

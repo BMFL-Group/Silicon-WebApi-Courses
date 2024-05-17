@@ -33,10 +33,11 @@ namespace Infrastructure.Repository
         #endregion
 
         #region GET
-        public async Task<ProgramDetailsEntity> GetProgramDetailAsync(string id)
+        public async Task<ProgramDetailsEntity> GetProgramDetailAsync(int id)
         {
             return await _context.ProgramDetails.FindAsync(id);
         }
+
         #endregion
 
         #region GET ALL
@@ -70,7 +71,7 @@ namespace Infrastructure.Repository
         #endregion
 
         #region DELETE
-        public async Task<bool> DeleteProgramDetailAsync(string id)
+        public async Task<bool> DeleteProgramDetailAsync(int id)
         {
             var programDetail = await _context.ProgramDetails.FindAsync(id);
             if (programDetail == null)
@@ -86,7 +87,7 @@ namespace Infrastructure.Repository
         #region EXISTS
         private bool ProgramDetailExists(int id)
         {
-            return _context.ProgramDetails.Any(x => x.Id == id);
+            return _context.ProgramDetails.Any(e => e.Id == id);
         }
         #endregion
     }

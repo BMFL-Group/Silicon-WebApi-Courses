@@ -2,9 +2,6 @@
 using Infrastructure.Entities;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -17,6 +14,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
+        #region GET
         public async Task<List<SavedCoursesModel>> GetSavedCoursesForUserAsync(string userId)
         {
             return await _context.SavedCourses
@@ -31,7 +29,9 @@ namespace Infrastructure.Repositories
                 })
                 .ToListAsync();
         }
+        #endregion
 
+        #region CREATE
         public async Task<SavedCoursesModel> CreateSavedCourseAsync(SavedCoursesModel savedCourse)
         {
             var entity = new SavedCoursesEntity
@@ -48,7 +48,9 @@ namespace Infrastructure.Repositories
             savedCourse.Id = entity.Id;
             return savedCourse;
         }
+        #endregion
 
+        #region UPDATE
         public async Task<bool> UpdateSavedCourseAsync(SavedCoursesModel savedCourse)
         {
             var entity = await _context.SavedCourses.FindAsync(savedCourse.Id);
@@ -63,7 +65,9 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        #endregion
 
+        #region DELETE
         public async Task<bool> DeleteSavedCourseAsync(int savedCourseId)
         {
             var savedCourse = await _context.SavedCourses.FindAsync(savedCourseId);
@@ -73,5 +77,6 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        #endregion
     }
 }

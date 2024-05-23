@@ -15,7 +15,7 @@ namespace Infrastructure.Repositories
         }
 
         #region GET
-        public async Task<List<SavedCoursesModel>> GetSavedCoursesForUserAsync(string userId)
+        public async Task<IEnumerable<SavedCoursesModel>> GetSavedCoursesForUserAsync(string userId)
         {
             return await _context.SavedCourses
                 .Where(sc => sc.UserId == userId)

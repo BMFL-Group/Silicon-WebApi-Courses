@@ -7,7 +7,7 @@ namespace Infrastructure.Models
         public string CourseId { get; set; } = null!;
         public string UserId { get; set; } = null!;
         public bool IsBookmarked { get; set; } = false;
-        public bool IsJoined { get; set; } = false;
+        public bool HasJoined { get; set; } = false;
     }
     
 }

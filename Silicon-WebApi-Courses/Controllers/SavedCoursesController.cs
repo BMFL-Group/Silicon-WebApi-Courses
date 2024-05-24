@@ -77,7 +77,7 @@ namespace Silicon_WebApi_Courses.Controllers
                     CourseId = savedCourseDto.CourseId,
                     UserId = savedCourseDto.UserId,
                     IsBookmarked = savedCourseDto.IsBookmarked,
-                    IsJoined = savedCourseDto.IsJoined
+                    HasJoined = savedCourseDto.HasJoined
                 };
 
                 var createdCourse = await _savedCoursesRepository.CreateSavedCourseAsync(savedCourseModel);

@@ -2,6 +2,7 @@
 using Infrastructure.Entities;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Infrastructure.Repositories
 {
@@ -25,7 +26,7 @@ namespace Infrastructure.Repositories
                     CourseId = sc.CourseId,
                     UserId = sc.UserId,
                     IsBookmarked = sc.IsBookmarked,
-                    IsJoined = sc.IsJoined
+                    HasJoined = sc.HasJoined
                 })
                 .ToListAsync();
         }
@@ -39,7 +40,7 @@ namespace Infrastructure.Repositories
                 CourseId = savedCourse.CourseId,
                 UserId = savedCourse.UserId,
                 IsBookmarked = savedCourse.IsBookmarked,
-                IsJoined = savedCourse.IsJoined
+                HasJoined = savedCourse.HasJoined
             };
 
             _context.SavedCourses.Add(entity);
@@ -53,17 +54,26 @@ namespace Infrastructure.Repositories
         #region UPDATE
         public async Task<bool> UpdateSavedCourseAsync(SavedCoursesModel savedCourse)
         {
-            var entity = await _context.SavedCourses.FindAsync(savedCourse.Id);
-            if (entity == null) return false;
+            try
+            {
+                var entity = await _context.SavedCourses.FirstOrDefaultAsync(x => x.Id == savedCourse.Id);
+                if (entity == null) return false;
 
-            entity.CourseId = savedCourse.CourseId;
-            entity.UserId = savedCourse.UserId;
-            entity.IsBookmarked = savedCourse.IsBookmarked;
-            entity.IsJoined = savedCourse.IsJoined;
+                var updatedEntity = new SavedCoursesEntity()
+                {
+                    Id = savedCourse.Id,
+                    CourseId = savedCourse.CourseId,
+                    UserId = savedCourse.UserId,
+                    IsBookmarked = savedCourse.IsBookmarked,
+                    HasJoined = savedCourse.HasJoined
+                };
 
-            _context.SavedCourses.Update(entity);
-            await _context.SaveChangesAsync();
-            return true;
+                _context.SavedCourses.Entry(entity).CurrentValues.SetValues(updatedEntity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            return false;
         }
         #endregion
 
